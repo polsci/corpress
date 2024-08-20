@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "corpress"
+  site-url: "https://polsci.github.io/corpress"
+  description: "Create a text corpus from a WordPress site using the WordPress API."
+  repo-branch: main
+  repo-url: "https://github.com/polsci/corpress"
