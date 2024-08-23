@@ -219,12 +219,12 @@ def create_corpus(corpus_format: str = 'txt', # format of the corpus files, txt 
     
     if csv_save_file:
         csv_save_path = os.path.dirname(csv_save_file)
-        if not os.path.exists(os.path.dirname(csv_save_path)):
-            os.makedirs(os.path.dirname(csv_save_path))
-            logging.info(f'Created path to save CSV corpus: {os.path.dirname(csv_save_path)}')
+        if not os.path.exists(csv_save_path):
+            os.makedirs(csv_save_path)
+            logging.info(f'Created path to save CSV corpus: {csv_save_path}')
 
     try:
-        # if csv_save_path is provided (regardless of format) create it and write first row
+        # if csv_save_file is provided (regardless of format) create it and write first row
         if csv_save_file:
             logging.info(f'Creating CSV file for {csv_file_type}: {csv_save_file}')
             fw = open(csv_save_file, 'w', encoding='utf-8')
