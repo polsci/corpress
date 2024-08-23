@@ -30,14 +30,13 @@ def get_api_url(url: str, # the URL of the WordPress website
 
     endpoint_url = None
         
-    match endpoint_type:
-        case 'posts':
-            endpoint = 'wp/v2/posts'
-        case 'pages':
-            endpoint = 'wp/v2/pages'
-        case _:
-            logging.error('The endpoint must be posts or pages.')
-            return None
+    if endpoint_type == 'posts':
+        endpoint = 'wp/v2/posts'
+    elif endpoint_type == 'pages':
+        endpoint = 'wp/v2/pages'
+    else:
+        logging.error('The endpoint must be posts or pages.')
+        return None
 
     if url.endswith(endpoint):
         logging.info(f'URL {endpoint_url} appears to be REST API {endpoint_type} route')
@@ -110,14 +109,13 @@ def get_json(endpoint_url: str, # the URL of the WordPress REST API endpoint
     else:
         logging.info(f'Using JSON save path: {json_save_path}')
 
-    match endpoint_type:
-        case 'posts':
-            pass
-        case 'pages':
-            pass
-        case _:
-            logging.error('The endpoint must be posts or pages.')
-            return False
+    if endpoint_type == 'posts':
+        pass
+    elif endpoint_type == 'pages':
+        pass
+    else:
+        logging.error('The endpoint must be posts or pages.')
+        return False
 
     if max_pages is not None:
         logging.info(f'Max pages to retrieve from API is set: {max_pages}')
@@ -184,16 +182,15 @@ def create_corpus(corpus_format: str = 'txt', # format of the corpus files, txt 
                  ) -> bool: # True if successful, False if there are errors parsing the JSON 
     """Create a corpus from downloaded JSON data in txt or csv format. """
 
-    match corpus_format:
-        case 'txt':
-            columns = ['date', 'datetime', 'type', 'id', 'title', 'link', 'filename']
-            csv_file_type = 'metadata'
-        case 'csv':
-            columns = ['date', 'datetime', 'type', 'id', 'title', 'link', 'text']
-            csv_file_type = 'corpus'
-        case _:
-            logging.error('Corpus format must be txt or csv')
-            return False
+    if corpus_format == 'txt':
+        columns = ['date', 'datetime', 'type', 'id', 'title', 'link', 'filename']
+        csv_file_type = 'metadata'
+    elif corpus_format == 'csv':
+        columns = ['date', 'datetime', 'type', 'id', 'title', 'link', 'text']
+        csv_file_type = 'corpus'
+    else:
+        logging.error('Corpus format must be txt or csv')
+        return False
 
     logging.info(f'Creating corpus in {corpus_format} format')
 
