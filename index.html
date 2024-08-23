@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.56">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Create a text corpus from a WordPress site using the WordPress API.">
+
+<title>corpress</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="corpress">
+<meta property="og:description" content="Create a text corpus from a WordPress site using the WordPress API.">
+<meta property="og:site_name" content="corpress">
+<meta name="twitter:title" content="corpress">
+<meta name="twitter:description" content="Create a text corpus from a WordPress site using the WordPress API.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">corpress</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">corpress</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">corpress</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">core</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link active" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
+  <li><a href="#todo" id="toc-todo" class="nav-link" data-scroll-target="#todo">TODO</a></li>
+  <li><a href="#install" id="toc-install" class="nav-link" data-scroll-target="#install">Install</a></li>
+  <li><a href="#before-using" id="toc-before-using" class="nav-link" data-scroll-target="#before-using">Before using</a></li>
+  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link" data-scroll-target="#how-to-use">How to use</a></li>
+  <li><a href="#collecting-both-posts-and-pages" id="toc-collecting-both-posts-and-pages" class="nav-link" data-scroll-target="#collecting-both-posts-and-pages">Collecting both posts and pages</a></li>
+  <li><a href="#no-rest-api-available" id="toc-no-rest-api-available" class="nav-link" data-scroll-target="#no-rest-api-available">No REST API available</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/polsci/corpress/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">corpress</h1>
+</div>
+
+<div>
+  <div class="description">
+    Create a text corpus from a WordPress site using the WordPress API.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>Geoff Ford<br>
+<a href="https://geoffford.nz/corpress-release">https://geoffford.nz/corpress-release</a></p>
+<p><img src="https://img.shields.io/github/v/release/polsci/corpress.png" class="img-fluid" alt="GitHub Release"> <a href="https://zenodo.org/doi/10.5281/zenodo.13364642"><img src="https://zenodo.org/badge/844819254.svg" class="img-fluid" alt="DOI"></a></p>
+<p><a href="https://geoffford.nz/corpress">Corpress documentation</a></p>
+<p>Corpress (Cor from Corpus, Press from WordPress) provides a simple approach to retrieve posts or pages from a WordPress site’s <a href="https://developer.wordpress.org/rest-api/">REST API</a> and create a corpus (i.e.&nbsp;a data-set of texts). Corpress provides an efficient and standardized way to collect text data from WordPress sites, avoiding the need for customized scrapers. Not all WordPress sites provide access to the REST API, but many do.</p>
+<p>I’m a political scientist who applies corpus linguistics and digital methods in <a href="https://geoffford.nz">my research</a>. I’m releasing Corpress with academic researchers in mind. This tool is intended for academic research. Please cite Corpress if you use it in your research.</p>
+<p>Corpress attempts to detect a REST API endpoint from a website URL for <a href="https://developer.wordpress.org/rest-api/reference/posts/#list-posts">posts</a> (default) and <a href="https://developer.wordpress.org/rest-api/reference/pages/#list-pages">pages</a>, then downloads JSON from the API, and then processes the JSON to create a corpus. You can create a corpus in: 1. ‘txt’ format: texts are saved in separate .txt files, compatible with common corpus linguistics tools, like AntConc. An optional meta-data file can be output with the link to each file, title, and date; or<br>
+2. ‘csv’ format: meta-data and text is saved in a single CSV file.</p>
+<p>I’ve used <a href="https://nbdev.fast.ai/">nbdev</a> to develop this library, which uses a Jupyter notebooks to develop code, <a href="https://geoffford.nz/corpress">documentation</a>, code examples and tests. If you want to contribute, you will need to clone the <a href="https://github.com/polsci/corpress">Github repo</a> and <a href="https://nbdev.fast.ai/getting_started.html">setup nbdev</a>.</p>
+<section id="acknowledgements" class="level2">
+<h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
+<p>This library was developed through my research on these projects:<br>
+* <a href="https://mappinglaws.net/">Mapping LAWS project: Issue Mapping and Analysing the Lethal Autonomous Weapons Debate</a> (Funded by Royal Society of New Zealand’s Marsden Fund, Grant 19-UOC-068)<br>
+* <a href="https://miningthesea.net/">Into the Deep: Analysing the Actors and Controversies Driving the Adoption of the World’s First Deep Sea Mining Governance</a> (Funded by Royal Society of New Zealand’s Marsden Fund, Grant 22-UOC-059)</p>
+</section>
+<section id="todo" class="level2">
+<h2 class="anchored" data-anchor-id="todo">TODO</h2>
+<ul>
+<li>Add in a way to zip a txt format corpus</li>
+<li>Sort out encoding - currently assumes UTF-8 all the way.</li>
+<li>Add checks on JSON save path.</li>
+</ul>
+</section>
+<section id="install" class="level2">
+<h2 class="anchored" data-anchor-id="install">Install</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install corpress</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="before-using" class="level2">
+<h2 class="anchored" data-anchor-id="before-using">Before using</h2>
+<ul>
+<li>There are good reasons not to collect and/or distribute corpora and it is the end-user’s responsibility to use this software in an ethical way.<br>
+</li>
+<li>Depending on the nature of the texts collected, what you are doing when analyzing the texts, and how you disseminate your research, it may be appropriate to process the texts further (e.g.&nbsp;to remove personally identifying information).<br>
+</li>
+<li>Not all Wordpress sites make the REST API accessible. See <a href="#no-rest-api-available">example output when there is no REST API available</a>.</li>
+<li>It is possible the API data may differ from what is visible online. You should check the texts in your corpus to make sure you have what you expect!</li>
+<li>Corpress will exit with appropriate logging information if an API endpoint is not found, not accessible or returns unexpected data. Just read what it returns.<br>
+</li>
+<li>Collecting data uses energy and server resources. It is your responsibility to <a href="#set-an-appropriate-user-agent">set an appropriate User Agent</a> and seconds between requests to the API to be thoughtful and respectful in your use of this tool.</li>
+</ul>
+</section>
+<section id="how-to-use" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-use">How to use</h2>
+<p>The <a href="https://geoffford.nz/corpress/core#corpress">corpress function</a> is the intended way to invoke Corpress and create a corpus. Other functions are relevant if you just want to get the API endpoint or download the JSON data. If you want the data in a different format, you could just generate the CSV and then convert that to whatever format you need.</p>
+<p>Corpress is intentionally verbose in terms of log output. This is helpful to record and understand the process of collecting the data.</p>
+<p>Most WordPress sites don’t have more than 100s to 1000s of posts. Using a Jupyter Notebook could be helpful to view and capture the log data from running Corpress and scope the corpus.</p>
+<p>Here’s a step-by-step description, with discussion of the key functionality.</p>
+<p>First import the corpress function.</p>
+<div id="cell-11" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> corpress.core <span class="im">import</span> corpress</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You are going to need to set a few arguments for corpress. The corpress function is <a href="https://geoffford.nz/corpress/core#corpress">documented in full here</a>. Here I’m breaking it down and showing an example.</p>
+<ul>
+<li><code>url</code>: Set the URL of the WordPress website, Corpress will try to determine the endpoint from this.<br>
+</li>
+<li><code>endpoint_type</code>: Do you want ‘posts’ or ‘pages’. If you want both, see the note on <a href="#collecting-both-posts-and-pages">collecting both posts and pages</a>.<br>
+</li>
+<li><code>corpus_format</code>: How do you want your corpus saved? ‘txt’ is a directory of txt files, ‘csv’ is a single CSV with meta-data and text.</li>
+</ul>
+<div id="cell-13" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'https://www.adho.org/'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>endpoint_type <span class="op">=</span> <span class="st">'posts'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>corpus_format <span class="op">=</span> <span class="st">'txt'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Setup where and how to save the data. Corpress will try and create directory paths if they don’t exist. * <code>json_save_path</code> (required): Specify the directory where Corpress will save the JSON data. Note: you should set a new path for every new Wordpress site you collect.<br>
+* <code>corpus_save_path</code>: Required for ‘txt’ corpus format, this is where the .txt files will be saved. Set as <code>None</code> or ommit if using ‘csv’ format.<br>
+* <code>csv_save_file</code>: * For ‘txt’ corpus format this is optional. This provides a way to export meta-data (date, title, link to text etc) for each text in the corpus. * For ‘csv’ corpus format this is required. This specifies the file where the meta-data and text will be saved.<br>
+* <code>include_title_in_text</code>: Depending on the data you are collecting and what you want to do with it, you can save the title of the post/page as part of the text or not. This is set to <code>True</code> by default.</p>
+<div id="cell-15" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>json_save_path <span class="op">=</span> <span class="st">'../test_data/example/json/'</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>corpus_save_path <span class="op">=</span> <span class="st">'../test_data/example/txt/'</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>csv_save_file <span class="op">=</span> csv_save_file<span class="op">=</span><span class="st">'../test_data/example/metadata.csv'</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>include_title_in_text <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Set how you query the API: * <code>seconds_between_requests</code>: By default this is set to one request every 5 seconds. You can’t specify less than 1 second. It may be appropiate if you are collecting lots of texts to specify a large number of seconds between requests.<br>
+* <code>headers</code>: Corpress uses the <a href="https://requests.readthedocs.io/en/latest/">Requests</a> Python Library for HTTP requests. You can pass headers you want in HTTP requests directly as a <code>dict</code>. <a href="https://requests.readthedocs.io/en/latest/user/quickstart/#custom-headers">See documentation here</a>. The most relevant one is to set a <a href="https://en.wikipedia.org/wiki/User-Agent_header">User-Agent header</a>. See the note below about how to <a href="#set-an-appropriate-user-agent">set an appropriate User-Agent</a>.<br>
+* <code>params</code>: The <a href="https://developer.wordpress.org/rest-api/reference/posts/#list-posts">posts</a> and <a href="https://developer.wordpress.org/rest-api/reference/pages/#list-pages">pages</a> endpoints support a number of parameters. This includes parameters to specify a search term, restrict dates and set the way results are ordered. Set additional parameters as a <code>dict</code>. See the Requests library documentation on <a href="https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls">passing parameters in URLS</a> to understand this. * <code>max_pages</code>: By default Corpress will collect <em>all</em> post (or pages). That might not be necessary. Interpret max_pages as the maximum number of successful API requests. The REST API normally returns 10 posts/pages per request, so if you want 100 posts you would set max_pages to 10.</p>
+<section id="set-an-appropriate-user-agent" class="level4">
+<h4 class="anchored" data-anchor-id="set-an-appropriate-user-agent">Set an appropriate User-Agent</h4>
+<p>Here’s a suggested format: <code>Your Research Project (https://university.edu/webpage)</code>. See how to set this below.</p>
+<div id="cell-17" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>seconds_between_requests <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {<span class="st">'User-Agent'</span>: <span class="st">'Your Research Project (https://university.edu/webpage)'</span>}</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {<span class="st">'search'</span>: <span class="st">'common'</span>} <span class="co"># just comment out or remove this line to collect every post, I've just chosen a word arbitrarily here</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>max_pages <span class="op">=</span> <span class="va">None</span> <span class="co"># collecting all available data, if want less data - set to an integer</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now you can call the <a href="https://geoffford.nz/corpress/core.html#corpress"><code>corpress</code></a> function and create a corpus. There will be lots of information logged about collecting and processing the texts. When completed it will output a table with a summary of the process and texts collected. This is the same data returned by the <a href="https://geoffford.nz/corpress/core.html#corpress"><code>corpress</code></a> function.</p>
+<div id="cell-19" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> corpress(url<span class="op">=</span>url, </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                  endpoint_type<span class="op">=</span>endpoint_type, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                  corpus_format<span class="op">=</span>corpus_format, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                  json_save_path<span class="op">=</span>json_save_path, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                  corpus_save_path<span class="op">=</span>corpus_save_path, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                  csv_save_file<span class="op">=</span>csv_save_file, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                  include_title_in_text<span class="op">=</span>include_title_in_text, </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                  seconds_between_requests<span class="op">=</span>seconds_between_requests, </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                  headers<span class="op">=</span>headers, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                  params<span class="op">=</span>params, </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                  max_pages<span class="op">=</span>max_pages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>2024-08-23 11:21:25 - INFO - Found REST API endpoint link
+2024-08-23 11:21:25 - INFO - Setting posts route https://adho.org/wp-json/wp/v2/posts
+2024-08-23 11:21:25 - INFO - Using JSON save path: ../test_data/example/json/
+2024-08-23 11:21:27 - INFO - Downloading https://adho.org/wp-json/wp/v2/posts?search=common&amp;page=1
+2024-08-23 11:21:27 - INFO - Total pages to retrieve is 3
+2024-08-23 11:21:34 - INFO - Downloading https://adho.org/wp-json/wp/v2/posts?search=common&amp;page=2
+2024-08-23 11:21:40 - INFO - Downloading https://adho.org/wp-json/wp/v2/posts?search=common&amp;page=3
+2024-08-23 11:21:45 - INFO - Creating corpus in txt format
+2024-08-23 11:21:45 - INFO - Using corpus save path: ../test_data/example/txt/
+2024-08-23 11:21:45 - INFO - Creating CSV file for metadata: ../test_data/example/metadata.csv
+2024-08-23 11:21:45 - INFO - Processing JSON: posts-3.json
+2024-08-23 11:21:45 - INFO - Processing JSON: posts-2.json
+2024-08-23 11:21:45 - INFO - Processing JSON: posts-1.json</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Key</th>
+<th data-quarto-table-cell-role="th">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>url</td>
+<td>https://www.adho.org/</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>endpoint_url</td>
+<td>https://adho.org/wp-json/wp/v2/posts</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>headers</td>
+<td>{'User-Agent': 'Your Research Project (https:/...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>params</td>
+<td>{'search': 'common'}</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>get_api_url</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>get_json</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>create_corpus</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>corpus_format</td>
+<td>txt</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>corpus_save_path</td>
+<td>../test_data/example/txt/</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>csv_save_file</td>
+<td>../test_data/example/metadata.csv</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>corpus_texts_count</td>
+<td>29</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>You can now preview the data you’ve collected.</p>
+<div id="cell-21" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_colwidth'</span>, <span class="va">None</span>) <span class="co"># to display full text in pandas dataframe</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>metadata <span class="op">=</span> pd.read_csv(csv_save_file)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>metadata <span class="op">=</span> metadata.sort_values(<span class="st">'date'</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>metadata[[<span class="st">'date'</span>, <span class="st">'link'</span>, <span class="st">'title'</span>, <span class="st">'filename'</span>]].head(<span class="dv">5</span>) <span class="co"># display first 5 rows of metadata, this is not all the fields available</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">filename</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>2012-12-06</td>
+<td>ADHO Adopts Creative Commons License for Its Web Site</td>
+<td>https://adho.org/2012/12/06/adho-adopts-creative-commons-license-for-its-web-site/</td>
+<td>2012-12-06-post-382-adho-adopts-creative-commons-license-for-its-web-site.txt</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>2013-03-28</td>
+<td>Apply to be ADHO’s Publications Liaison</td>
+<td>https://adho.org/2013/03/28/apply-to-be-adhos-publications-liaison/</td>
+<td>2013-03-28-post-366-apply-to-be-adhos-publications-liaison.txt</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>2013-06-23</td>
+<td>ADHO Calls for Proposals for New Special Interest Groups</td>
+<td>https://adho.org/2013/06/23/adho-calls-for-proposals-for-new-special-interest-groups/</td>
+<td>2013-06-23-post-338-adho-calls-for-proposals-for-new-special-interest-groups.txt</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>2013-07-09</td>
+<td>Participate in the Joint ADHO and centerNet AGM at Digital Humanities 2013</td>
+<td>https://adho.org/2013/07/09/participate-in-the-joint-adho-and-centernet-agm-at-digital-humanities-2013/</td>
+<td>2013-07-09-post-408-participate-in-the-joint-adho-and-centernet-agm-at-digital-humanities-2013.txt</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>2013-07-14</td>
+<td>Digital Humanities 2015 to be held in Sydney, Australia</td>
+<td>https://adho.org/2013/07/14/digital-humanities-2015-to-be-held-in-sydney-australia/</td>
+<td>2013-07-14-post-288-digital-humanities-2015-to-be-held-in-sydney-australia.txt</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>You can view a specific text file (if you used the ‘txt’ format) like this:</p>
+<div id="cell-23" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> <span class="st">'2012-12-06-post-382-adho-adopts-creative-commons-license-for-its-web-site.txt'</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(os.path.join(corpus_save_path, filename), <span class="st">'r'</span>, encoding <span class="op">=</span> <span class="st">'utf-8'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="bu">file</span>.read()   </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ADHO Adopts Creative Commons License for Its Web Site
+
+The Alliance of Digital Humanities Organizations (ADHO) is pleased to announce that all content on its web site is now available under a Creative Commons Attribution (CC-BY) license. This means that individuals and organizations are welcome to re-use and adapt ADHO’s documents and resources, so long as ADHO is cited as the source. Neil Fraistat, Chair of ADHO’s Steering Committee, notes that “this is one of an ongoing series of actions this year that are being designed to make ADHO resources more open and available to the larger community.”
+&nbsp;
+ADHO’s decision to adopt the CC-BY license was prompted by the recognition that through explicitly sharing its work it can have a greater impact, contribute to best practices, and demonstrate its support for open access. Recently the Program Committee for the 2013 Digital Humanities conference  revamped ADHO’s Guidelines for Proposal Authors &amp; Reviewers, making them more inclusive, concrete, and transparent. PC chair Bethany Nowviskie received a request from the organizers of another conference to re-use these guidelines. Prompted by Nowviskie's suggestion, the ADHO Steering Committee determined that not only should the conference guidelines be made freely available, but its entire web site.
+&nbsp;
+In adopting a Creative Commons license for its website, ADHO follows suit with several of its existing publications, including Digital Studies/Le Champ Numerique, Digital Humanities Quarterly, and DH Answers.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="collecting-both-posts-and-pages" class="level2">
+<h2 class="anchored" data-anchor-id="collecting-both-posts-and-pages">Collecting both posts and pages</h2>
+<p>If you want to collect both posts and pages, just invoke corpress twice: once with <code>endpoint_type</code> set to ‘posts’ and then with it set to ‘pages’.</p>
+<p>If you are outputting in the ‘txt’ corpus format without a metadata file (i.e.&nbsp;<code>csv_save_file</code> set to <code>None</code> or omitted from the function call), you won’t have a problem. The filenames for posts/pages won’t conflict.</p>
+<p>If you are specifying a <code>csv_save_file</code> - either because you are outputting in the ‘csv’ corpus format or in the ‘txt’ format and wanting the meta-data - make sure you use a separate <code>csv_save_file</code> for ‘posts’ and ‘pages’. You will get two separate files, combining these with a library like <a href="https://pandas.pydata.org/">Pandas</a>, which is installed with Corpress, is trivial. I will leave that for you to Google how to merge two CSV files into one using Pandas.</p>
+</section>
+<section id="no-rest-api-available" class="level2">
+<h2 class="anchored" data-anchor-id="no-rest-api-available">No REST API available</h2>
+<p>Here’s an example showing what you will see if there no REST API is accessible.</p>
+<div id="cell-26" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test a site that has no endpoint</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> corpress(url <span class="op">=</span> <span class="st">'https://www.whitehouse.gov/'</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                endpoint_type<span class="op">=</span><span class="st">'posts'</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                corpus_format<span class="op">=</span><span class="st">'txt'</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                json_save_path <span class="op">=</span> <span class="st">'../test_data/json/'</span>, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                corpus_save_path <span class="op">=</span> <span class="st">'../test_data/corpus/'</span>, </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                max_pages<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>2024-08-23 11:21:46 - INFO - No REST API endpoint link in markup
+2024-08-23 11:21:46 - INFO - Guessing posts route based on URL https://www.whitehouse.gov/wp-json/wp/v2/posts
+2024-08-23 11:21:46 - INFO - Using JSON save path: ../test_data/json/
+2024-08-23 11:21:46 - INFO - Max pages to retrieve from API is set: 2
+2024-08-23 11:21:47 - INFO - Downloading https://www.whitehouse.gov/wp-json/wp/v2/posts?page=1
+2024-08-23 11:21:47 - ERROR - Error downloading page 1 from https://www.whitehouse.gov/wp-json/wp/v2/posts
+2024-08-23 11:21:47 - ERROR - Status code: 403
+2024-08-23 11:21:47 - ERROR - It appears that this website does not provide access to the REST API. Exiting.
+2024-08-23 11:21:47 - ERROR - Error downloading data. Exiting.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Key</th>
+<th data-quarto-table-cell-role="th">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>url</td>
+<td>https://www.whitehouse.gov/</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>endpoint_url</td>
+<td>https://www.whitehouse.gov/wp-json/wp/v2/posts</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>headers</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>params</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>get_api_url</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>get_json</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>create_corpus</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>corpus_format</td>
+<td>txt</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>corpus_save_path</td>
+<td>../test_data/corpus/</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>csv_save_file</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>corpus_texts_count</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/geoffford\.nz\/corpress");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/polsci/corpress/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
