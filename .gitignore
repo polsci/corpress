@@ -1,3 +1,9 @@
+test_data/corpus/
+test_data/example/
+test_data/json/
+test_data/metadata/
+test_data/txt/
+
 _docs/
 _proc/
 
