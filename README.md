@@ -5,7 +5,7 @@
 
 Geoff Ford  
 <https://geoffford.nz>  
-Version 1.0.1
+Version 1.0.2
 
 [Corpress documentation](https://geoffford.nz/corpress)
 

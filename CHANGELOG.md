@@ -1,5 +1,11 @@
 # Change log
 
+## [1.0.2] - 2024-08-23
+
+### Fixed
+
+- made type hints backwards compatible with 3.8
+
 ## [1.0.1] - 2024-08-23
 
 ### Changed

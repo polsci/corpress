@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 def get_api_url(url: str, # the URL of the WordPress website 
                 endpoint_type: str = 'posts', # posts or pages
                 headers: dict = None, # optional headers for requests
-                ) -> str|None: # None if no endpoint detected, otherwise returns the endpoint URL
+                ): # None if no endpoint detected, otherwise returns the endpoint URL
     """Queries a URL to get the REST API route for the endpoint type provided. """
 
     if not headers:
