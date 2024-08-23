@@ -229,18 +229,6 @@ result = corpress(url=url,
     2024-08-23 11:21:45 - INFO - Processing JSON: posts-2.json
     2024-08-23 11:21:45 - INFO - Processing JSON: posts-1.json
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-&#10;    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-&#10;    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 
 |     | Key                | Value                                             |
 |-----|--------------------|---------------------------------------------------|
@@ -256,7 +244,6 @@ result = corpress(url=url,
 | 9   | csv_save_file      | ../test_data/example/metadata.csv                 |
 | 10  | corpus_texts_count | 29                                                |
 
-</div>
 
 You can now preview the data you’ve collected.
 
@@ -268,18 +255,6 @@ metadata = metadata.sort_values('date')
 metadata[['date', 'link', 'title', 'filename']].head(5) # display first 5 rows of metadata, this is not all the fields available
 ```
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-&#10;    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-&#10;    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 
 |     | date       | link                                                                       | title                                                                                                   | filename                                                                                           |
 |-----|------------|----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
@@ -288,8 +263,6 @@ metadata[['date', 'link', 'title', 'filename']].head(5) # display first 5 rows o
 | 6   | 2013-06-23 | ADHO Calls for Proposals for New Special Interest Groups                   | https://adho.org/2013/06/23/adho-calls-for-proposals-for-new-special-interest-groups/                   | 2013-06-23-post-338-adho-calls-for-proposals-for-new-special-interest-groups.txt                   |
 | 5   | 2013-07-09 | Participate in the Joint ADHO and centerNet AGM at Digital Humanities 2013 | https://adho.org/2013/07/09/participate-in-the-joint-adho-and-centernet-agm-at-digital-humanities-2013/ | 2013-07-09-post-408-participate-in-the-joint-adho-and-centernet-agm-at-digital-humanities-2013.txt |
 | 4   | 2013-07-14 | Digital Humanities 2015 to be held in Sydney, Australia                    | https://adho.org/2013/07/14/digital-humanities-2015-to-be-held-in-sydney-australia/                     | 2013-07-14-post-288-digital-humanities-2015-to-be-held-in-sydney-australia.txt                     |
-
-</div>
 
 You can view a specific text file (if you used the ‘txt’ format) like
 this:
@@ -353,18 +326,6 @@ result = corpress(url = 'https://www.whitehouse.gov/',
     2024-08-23 11:21:47 - ERROR - It appears that this website does not provide access to the REST API. Exiting.
     2024-08-23 11:21:47 - ERROR - Error downloading data. Exiting.
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-&#10;    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-&#10;    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 
 |     | Key                | Value                                          |
 |-----|--------------------|------------------------------------------------|
@@ -380,4 +341,3 @@ result = corpress(url = 'https://www.whitehouse.gov/',
 | 9   | csv_save_file      | None                                           |
 | 10  | corpus_texts_count | 0                                              |
 
-</div>
