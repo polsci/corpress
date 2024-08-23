@@ -1,5 +1,11 @@
 # Change log
 
+## [1.0.3] - 2024-08-23
+
+### Fixed
+
+- fixed csv_save_file path generation
+
 ## [1.0.2] - 2024-08-23
 
 ### Fixed
