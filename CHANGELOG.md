@@ -1,5 +1,16 @@
 # Change log
 
+## [1.1.0] - 2024-08-23
+
+### Changed
+
+- Integrated release shield for version
+
+### Added
+
+- Citation
+- Zenodo integration  
+
 ## [1.0.3] - 2024-08-23
 
 ### Fixed
