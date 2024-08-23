@@ -5,4 +5,8 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://geoffford.nz',
                 'git_url': 'https://github.com/polsci/corpress',
                 'lib_path': 'corpress'},
-  'syms': {'corpress.core': {'corpress.core.foo': ('core.html#foo', 'corpress/core.py')}}}
+  'syms': { 'corpress.core': { 'corpress.core.corpress': ('core.html#corpress', 'corpress/core.py'),
+                               'corpress.core.create_corpus': ('core.html#create_corpus', 'corpress/core.py'),
+                               'corpress.core.get_api_url': ('core.html#get_api_url', 'corpress/core.py'),
+                               'corpress.core.get_json': ('core.html#get_json', 'corpress/core.py'),
+                               'corpress.core.result_reporting': ('core.html#result_reporting', 'corpress/core.py')}}}
