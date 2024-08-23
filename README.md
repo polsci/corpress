@@ -7,7 +7,7 @@ Geoff Ford
 <https://geoffford.nz/corpress-release>
 
 ![GitHub
-Release](https://img.shields.io/github/v/release/polsci/corpress.png)
+Release](https://img.shields.io/github/v/release/polsci/corpress.png) [![DOI](https://zenodo.org/badge/844819254.svg)](https://zenodo.org/doi/10.5281/zenodo.13364642)  
 
 [Corpress documentation](https://geoffford.nz/corpress)
 
