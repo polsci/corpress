@@ -2,7 +2,7 @@ project:
   output-dir: _docs
 
 website:
-  title: "corpress"
+  title: "CorPress"
   site-url: "https://geoffford.nz/corpress"
   description: "Create a text corpus from a WordPress site using the WordPress API."
   repo-branch: main
