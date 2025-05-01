@@ -1,5 +1,19 @@
 # Change log
 
+## [1.1.1] - 2025-05-01
+
+### Added
+
+- encoding parameter added to create_corpus and corpress to allow control of encoding of exported corpus
+
+### Changed
+
+- Upgraded nbdev (development framework) with support for new Pypi requirements
+
+### Fixed
+
+- CSV export header mismatch with column data (resolves https://github.com/polsci/corpress/issues/1, thanks @Jackreckness)
+
 ## [1.1.0] - 2024-08-23
 
 ### Changed
