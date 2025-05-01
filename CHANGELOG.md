@@ -1,5 +1,15 @@
 # Change log
 
+## [1.1.2] - 2025-05-02
+
+### Changed
+
+- Added notes to core function documentation to direct users to the example on the documentation home / README.
+
+### Fixed
+
+- Minor formatting tweaks in the README and documentation related to markdown rendering differences between dev and documentation/pypi.
+
 ## [1.1.1] - 2025-05-01
 
 ### Added
