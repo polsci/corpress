@@ -30,11 +30,13 @@ CorPress attempts to detect a REST API endpoint from a website URL for
 (default) and
 [pages](https://developer.wordpress.org/rest-api/reference/pages/#list-pages),
 then downloads JSON from the API, and then processes the JSON to create
-a corpus. You can create a corpus in:  
-1. ‘txt’ format: texts are saved in separate .txt files, compatible with
-common corpus linguistics tools, like AntConc. An optional meta-data
-file can be output with the link to each file, title, and date; or  
-2. ‘csv’ format: meta-data and text is saved in a single CSV file.
+a corpus. You can create a corpus in:
+
+1.  ‘txt’ format: texts are saved in separate .txt files, compatible
+    with common corpus linguistics tools, like AntConc. An optional
+    meta-data file can be output with the link to each file, title, and
+    date; or  
+2.  ‘csv’ format: meta-data and text is saved in a single CSV file.
 
 I’ve used [nbdev](https://nbdev.fast.ai/) to develop this library, which
 uses a Jupyter notebooks to develop code,
@@ -45,14 +47,15 @@ nbdev](https://nbdev.fast.ai/getting_started.html).
 
 ## Acknowledgements
 
-This library was developed through my research on these projects:  
-\* [Mapping LAWS project: Issue Mapping and Analysing the Lethal
-Autonomous Weapons Debate](https://mappinglaws.net/) (Funded by Royal
-Society of New Zealand’s Marsden Fund, Grant 19-UOC-068)  
-\* [Into the Deep: Analysing the Actors and Controversies Driving the
-Adoption of the World’s First Deep Sea Mining
-Governance](https://miningthesea.net/) (Funded by Royal Society of New
-Zealand’s Marsden Fund, Grant 22-UOC-059)
+This library was developed through my research on these projects:
+
+- [Mapping LAWS project: Issue Mapping and Analysing the Lethal
+  Autonomous Weapons Debate](https://mappinglaws.net/) (Funded by Royal
+  Society of New Zealand’s Marsden Fund, Grant 19-UOC-068)  
+- [Into the Deep: Analysing the Actors and Controversies Driving the
+  Adoption of the World’s First Deep Sea Mining
+  Governance](https://miningthesea.net/) (Funded by Royal Society of New
+  Zealand’s Marsden Fund, Grant 22-UOC-059)
 
 ## Install
 
@@ -127,24 +130,25 @@ corpus_format = 'txt'
 ```
 
 Setup where and how to save the data. CorPress will try and create
-directory paths if they don’t exist.  
-\* `json_save_path` (required): Specify the directory where CorPress
-will save the JSON data. Note: you should set a new path for every new
-Wordpress site you collect.  
-\* `corpus_save_path`: Required for ‘txt’ corpus format, this is where
-the .txt files will be saved. Set as `None` or ommit if using ‘csv’
-format.  
-\* `csv_save_file`:  
-\* For ‘txt’ corpus format this is optional. This provides a way to
-export meta-data (date, title, link to text etc) for each text in the
-corpus.  
-\* For ‘csv’ corpus format this is required. This specifies the file
-where the meta-data and text will be saved.  
-\* `include_title_in_text`: Depending on the data you are collecting and
-what you want to do with it, you can save the title of the post/page as
-part of the text or not. This is set to `True` by default.  
-\* `encoding`: The encoding of the exported files. This is set to
-`utf-8` by default.
+directory paths if they don’t exist.
+
+- `json_save_path` (required): Specify the directory where CorPress will
+  save the JSON data. Note: you should set a new path for every new
+  Wordpress site you collect.  
+- `corpus_save_path`: Required for ‘txt’ corpus format, this is where
+  the .txt files will be saved. Set as `None` or ommit if using ‘csv’
+  format.  
+- `csv_save_file`:
+  - For ‘txt’ corpus format this is optional. This provides a way to
+    export meta-data (date, title, link to text etc) for each text in
+    the corpus.  
+  - For ‘csv’ corpus format this is required. This specifies the file
+    where the meta-data and text will be saved.  
+- `include_title_in_text`: Depending on the data you are collecting and
+  what you want to do with it, you can save the title of the post/page
+  as part of the text or not. This is set to `True` by default.  
+- `encoding`: The encoding of the exported files. This is set to `utf-8`
+  by default.
 
 ``` python
 json_save_path = '../test_data/example/json/'
@@ -154,33 +158,36 @@ include_title_in_text = True
 encoding = 'utf-8'
 ```
 
-Set how you query the API: \* `seconds_between_requests`: By default
-this is set to one request every 5 seconds. You can’t specify less than
-1 second. It may be appropiate if you are collecting lots of texts to
-specify a large number of seconds between requests.  
-\* `headers`: CorPress uses the
-[Requests](https://requests.readthedocs.io/en/latest/) Python Library
-for HTTP requests. You can pass headers you want in HTTP requests
-directly as a `dict`. [See documentation
-here](https://requests.readthedocs.io/en/latest/user/quickstart/#custom-headers).
-The most relevant one is to set a [User-Agent
-header](https://en.wikipedia.org/wiki/User-Agent_header). See the note
-below about how to [set an appropriate
-User-Agent](#set-an-appropriate-user-agent).  
-\* `params`: The
-[posts](https://developer.wordpress.org/rest-api/reference/posts/#list-posts)
-and
-[pages](https://developer.wordpress.org/rest-api/reference/pages/#list-pages)
-endpoints support a number of parameters. This includes parameters to
-specify a search term, restrict dates and set the way results are
-ordered. Set additional parameters as a `dict`. See the Requests library
-documentation on [passing parameters in
-URLS](https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls)
-to understand this.  
-\* `max_pages`: By default CorPress will collect *all* post (or pages).
-That might not be necessary. Interpret max_pages as the maximum number
-of successful API requests. The REST API normally returns 10 posts/pages
-per request, so if you want 100 posts you would set max_pages to 10.
+Set how you query the API:
+
+- `seconds_between_requests`: By default this is set to one request
+  every 5 seconds. You can’t specify less than 1 second. It may be
+  appropiate if you are collecting lots of texts to specify a large
+  number of seconds between requests.  
+- `headers`: CorPress uses the
+  [Requests](https://requests.readthedocs.io/en/latest/) Python Library
+  for HTTP requests. You can pass headers you want in HTTP requests
+  directly as a `dict`. [See documentation
+  here](https://requests.readthedocs.io/en/latest/user/quickstart/#custom-headers).
+  The most relevant one is to set a [User-Agent
+  header](https://en.wikipedia.org/wiki/User-Agent_header). See the note
+  below about how to [set an appropriate
+  User-Agent](#set-an-appropriate-user-agent).  
+- `params`: The
+  [posts](https://developer.wordpress.org/rest-api/reference/posts/#list-posts)
+  and
+  [pages](https://developer.wordpress.org/rest-api/reference/pages/#list-pages)
+  endpoints support a number of parameters. This includes parameters to
+  specify a search term, restrict dates and set the way results are
+  ordered. Set additional parameters as a `dict`. See the Requests
+  library documentation on [passing parameters in
+  URLS](https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls)
+  to understand this.  
+- `max_pages`: By default CorPress will collect *all* post (or pages).
+  That might not be necessary. Interpret max_pages as the maximum number
+  of successful API requests. The REST API normally returns 10
+  posts/pages per request, so if you want 100 posts you would set
+  max_pages to 10.
 
 #### Set an appropriate User-Agent
 
@@ -266,6 +273,7 @@ metadata[['date', 'link', 'title', 'filename']].head(5) # display first 5 rows o
 | 6 | 2013-06-23 | https://adho.org/2013/06/23/adho-calls-for-proposals-for-new-special-interest-groups/ | ADHO Calls for Proposals for New Special Interest Groups | 2013-06-23-post-338-adho-calls-for-proposals-for-new-special-interest-groups.txt |
 | 5 | 2013-07-09 | https://adho.org/2013/07/09/participate-in-the-joint-adho-and-centernet-agm-at-digital-humanities-2013/ | Participate in the Joint ADHO and centerNet AGM at Digital Humanities 2013 | 2013-07-09-post-408-participate-in-the-joint-adho-and-centernet-agm-at-digital-humanities-2013.txt |
 | 4 | 2013-07-14 | https://adho.org/2013/07/14/digital-humanities-2015-to-be-held-in-sydney-australia/ | Digital Humanities 2015 to be held in Sydney, Australia | 2013-07-14-post-288-digital-humanities-2015-to-be-held-in-sydney-australia.txt |
+
 
 
 You can view a specific text file (if you used the ‘txt’ format) like
