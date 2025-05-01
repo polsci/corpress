@@ -1,10 +1,11 @@
 # Change log
 
-## [1.1.2] - 2025-05-02
+## [1.1.2] - 2025-05-02 - minor documentation text and formatting changes
 
 ### Changed
 
 - Added notes to core function documentation to direct users to the example on the documentation home / README.
+- improved responsiveness of the documentation site with overflow on attribute tables
 
 ### Fixed
 

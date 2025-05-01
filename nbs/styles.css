@@ -35,3 +35,8 @@ div.description {
   font-size: 135%;
   opacity: 70%;
 }
+
+main table.caption-top {
+  display: block;
+  overflow-x: auto;
+}
